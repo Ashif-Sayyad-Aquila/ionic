@@ -1,0 +1,136 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Global styles that apply to the entire Ionic app.
+ * Documentation: https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core Ionic CSS */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+/* System-based Dark Mode */
+// @import "@ionic/angular/css/palettes/dark.system.css";
+
+/* ==========================================================
+   Light Theme (Default)
+   ========================================================== */
+:root {
+  --ion-color-primary: #f68100;
+  --ion-color-primary-rgb: 255, 152, 0;
+  --ion-color-primary-contrast: #ffffff;
+
+  --ion-background-color: #fde9dc;
+  --ion-text-color: #222;
+  --card-background: #ffffff;
+
+  --input-background: #ffffff;
+  --input-border-color: #f68100;
+  --input-text-color: #000;
+
+  --button-background: #f68100;
+  --button-text-color: #ffffff;
+
+  /* Font */
+  font-family: "Open Sans", sans-serif;
+}
+
+/* ==========================================================
+   Dark Theme (Auto by System Preference)
+   ========================================================== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ion-color-primary: #ff9800;
+    --ion-color-primary-contrast: #000000;
+
+    --ion-background-color: #fde9dc !important;
+    --ion-text-color: #e0e0e0;
+    --card-background: #1f1f1f;
+
+    --input-background: #2a2a2a;
+    --input-border-color: #444;
+    --input-text-color: #ffffff;
+
+    --button-background: #ff9800;
+    --button-text-color: #000;
+  }
+}
+
+/* ==========================================================
+   Base Element Styling
+   ========================================================== */
+body {
+  font-family: "Open Sans", sans-serif;
+  background-color: var(--ion-background-color);
+  color: var(--ion-text-color);
+  margin: 0;
+}
+
+.card {
+  background-color: var(--card-background);
+  color: var(--ion-text-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+/* Inputs */
+input,
+ion-input {
+  // background-color: var(--input-background);
+  color: var(--input-text-color);
+  // border: 1px solid var(--input-border-color);
+  border-radius: 5px;
+  padding: 5px 10px !important;
+}
+
+/* Buttons */
+button,
+ion-button {
+  // background-color: var(--button-background);
+  color: var(--button-text-color);
+  border: none;
+  padding: 0px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+/* Typography */
+h5 {
+  font-size: 24px;
+  line-height: 38px;
+  font-weight: 600;
+}
+
+h6 {
+  font-size: 18px;
+  line-height: 29px;
+}
+
+.body1 {
+  font-size: 16px;
+  line-height: 21px;
+}
+
+.body2 {
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.caption {
+  font-size: 11px;
+  line-height: 18px;
+  color: #777;
+}

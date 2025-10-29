@@ -1,0 +1,81 @@
+.add-project-page {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.add-project-container {
+  background: #fffaf5;
+  border-radius: 12px;
+  padding: 25px;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #3b2d1f;
+  margin-bottom: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Input styling */
+.input-item {
+  --background: #fff;
+  --border-color: #d9b890;
+  --highlight-color-focused: #ff9800;
+  --color: #3b2d1f;
+  border-radius: 8px;
+}
+
+ion-label {
+  color: #6d4c41;
+}
+
+ion-input,
+ion-select {
+  color: #3b2d1f;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.half {
+  flex: 1 1 calc(50% - 10px);
+}
+
+/* Buttons */
+.button-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+ion-button[color='warning'] {
+  --background: #ff9800;
+  --background-hover: #f57c00;
+  --border-color: #ff9800;
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+ion-button[fill='outline'] {
+  --color: #ff9800;
+  --border-color: #ff9800;
+  --background: transparent;
+  font-weight: 600;
+}

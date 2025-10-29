@@ -1,0 +1,60 @@
+<ion-content class="project-page">
+  <div class="project-container">
+    <!-- Header Section -->
+    <div class="header-section">
+      <img src="assets/icon/takIQ.png" alt="TAK IQ" class="logo" />
+      <h2 class="title">TAK IQ</h2>
+    </div>
+
+    <h3 class="page-heading">Projects</h3>
+
+    <!-- Table Section -->
+    <div class="table-wrapper shadow">
+      <table class="project-table">
+        <thead>
+          <tr>
+            <th>Project Name</th>
+            <th>Company</th>
+            <th>Well Name</th>
+            <th>Location</th>
+            <th>Progress</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let project of projects">
+            <td>{{ project.name }}</td>
+            <td>{{ project.company }}</td>
+            <td>
+              <div class="well-name">
+                <span class="main">{{ project.wellName }}</span>
+                <span class="sub">PadName</span>
+              </div>
+            </td>
+            <td>{{ project.location }}</td>
+            <td class="progress-cell">
+              <div class="progress-container">
+                <ion-progress-bar
+                  [value]="project.progress / 100"
+                ></ion-progress-bar>
+                <span class="progress-text">{{ project.progress }}%</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Floating Add Project Button -->
+    <ion-fab
+      vertical="bottom"
+      horizontal="end"
+      slot="fixed"
+      class="add-project-fab"
+    >
+      <ion-fab-button class="add-project-btn" (click)="openAddProjectModal()">
+        <ion-icon name="add-outline"></ion-icon>
+        <span>Add New Project</span>
+      </ion-fab-button>
+    </ion-fab>
+  </div>
+</ion-content>

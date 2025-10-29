@@ -1,0 +1,65 @@
+<ion-content class="add-project-page">
+  <div class="add-project-container">
+    <h3 class="form-title">Add New Project</h3>
+
+    <form (ngSubmit)="saveProject()" #projectForm="ngForm">
+      <!-- Project Name -->
+      <ion-item fill="outline" class="input-item">
+        <ion-label position="floating">Project Name</ion-label>
+        <ion-input type="text" name="projectName" [(ngModel)]="project.projectName" required></ion-input>
+      </ion-item>
+
+      <!-- Team & Company -->
+      <div class="row">
+        <ion-item fill="outline" class="input-item half">
+          <ion-label position="floating">Team</ion-label>
+          <ion-select [(ngModel)]="project.team" name="team" interface="popover" placeholder="Select Team">
+            <ion-select-option value="Alpha">Alpha</ion-select-option>
+            <ion-select-option value="Bravo">Bravo</ion-select-option>
+            <ion-select-option value="Charlie">Charlie</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item fill="outline" class="input-item half">
+          <ion-label position="floating">Company</ion-label>
+          <ion-select [(ngModel)]="project.company" name="company" interface="popover" placeholder="Select Company">
+            <ion-select-option value="ExxonMobil">ExxonMobil</ion-select-option>
+            <ion-select-option value="Shell">Shell</ion-select-option>
+            <ion-select-option value="Chevron">Chevron</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </div>
+
+      <!-- Latitude & Longitude -->
+      <div class="row">
+        <ion-item fill="outline" class="input-item half">
+          <ion-label position="floating">Latitude</ion-label>
+          <ion-input type="text" name="latitude" [(ngModel)]="project.latitude"></ion-input>
+        </ion-item>
+
+        <ion-item fill="outline" class="input-item half">
+          <ion-label position="floating">Longitude</ion-label>
+          <ion-input type="text" name="longitude" [(ngModel)]="project.longitude"></ion-input>
+        </ion-item>
+      </div>
+
+      <!-- Well Name -->
+      <ion-item fill="outline" class="input-item">
+        <ion-label position="floating">Well Name</ion-label>
+        <ion-input type="text" name="wellName" [(ngModel)]="project.wellName"></ion-input>
+      </ion-item>
+
+      <!-- Pad Name -->
+      <ion-item fill="outline" class="input-item">
+        <ion-label position="floating">Pad Name</ion-label>
+        <ion-input type="text" name="padName" [(ngModel)]="project.padName"></ion-input>
+      </ion-item>
+
+      <!-- Buttons -->
+      <div class="button-row">
+        <ion-button fill="outline" color="warning" (click)="cancel()">Cancel</ion-button>
+        <ion-button color="warning" type="submit">Save</ion-button>
+      </div>
+    </form>
+  </div>
+</ion-content>
