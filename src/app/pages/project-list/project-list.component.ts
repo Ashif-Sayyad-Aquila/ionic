@@ -27,7 +27,7 @@ export class ProjectListComponent implements OnInit {
   /** Load projects from SQLite DB */
   async loadProjects() {
     try {
-      await this.dbService.initDB();
+      //await this.dbService.initDB();
       const data = await this.dbService.getAllProjects();
 
       // Map DB fields to UI model

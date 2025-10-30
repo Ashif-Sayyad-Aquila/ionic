@@ -32,7 +32,7 @@ export class AddProjectComponent implements OnInit {
     private dbService: DbService,
     private modalCtrl: ModalController,
     private loadingCtrl: LoadingController
-  ) {}
+  ) { }
 
   async ngOnInit() {
     // Show loading spinner
@@ -62,8 +62,8 @@ export class AddProjectComponent implements OnInit {
         console.warn('⚠️ Project name is required');
         return;
       }
-
-      await this.dbService.initDB();
+      if (!this.dbService['db']) throw new Error('DB not initialized');
+      // await this.dbService.initDB();
 
       const insertSQL = `
         INSERT INTO project (
@@ -84,7 +84,8 @@ export class AddProjectComponent implements OnInit {
         new Date().toISOString(),
       ];
 
-      await this.dbService['db']?.run(insertSQL, params);
+      //await this.dbService['db']?.run(insertSQL, params);
+      await this.dbService['db'].run(insertSQL, params);
       console.log('✅ Project saved:', this.project);
 
       this.modalCtrl.dismiss(true);
@@ -110,7 +111,7 @@ export class AddProjectComponent implements OnInit {
 
       const position = await Geolocation.getCurrentPosition({
         enableHighAccuracy: true,
-        timeout: 15000,
+        timeout: 50000,
         maximumAge: 0,
       });
 
