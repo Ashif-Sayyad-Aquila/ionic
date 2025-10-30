@@ -1,7 +1,7 @@
 import { Component, Renderer2 } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
-import { SqliteService } from './services/sqlite.service';  // ✅ ensure this path is correct
+import { DbService } from './services/db.service';
 
 @Component({
   selector: 'app-root',
@@ -12,8 +12,8 @@ import { SqliteService } from './services/sqlite.service';  // ✅ ensure this p
 })
 export class AppComponent {
   isDarkMode = false;
-  constructor(private sqliteService: SqliteService, private renderer: Renderer2) {
-    this.sqliteService.initDB();
+  constructor(private dbService: DbService, private renderer: Renderer2) {
+    this.dbService.initDB();
     this.initializeTheme();
   }
 

@@ -16,6 +16,7 @@
             <th>Project Name</th>
             <th>Company</th>
             <th>Well Name</th>
+            <th>Pad Name</th>
             <th>Location</th>
             <th>Progress</th>
           </tr>
@@ -24,36 +25,29 @@
           <tr *ngFor="let project of projects">
             <td>{{ project.name }}</td>
             <td>{{ project.company }}</td>
-            <td>
-              <div class="well-name">
-                <span class="main">{{ project.wellName }}</span>
-                <span class="sub">PadName</span>
-              </div>
-            </td>
+            <td>{{ project.wellName }}</td>
+            <td>{{ project.padName }}</td>
             <td>{{ project.location }}</td>
             <td class="progress-cell">
               <div class="progress-container">
-                <ion-progress-bar
-                  [value]="project.progress / 100"
-                ></ion-progress-bar>
+                <ion-progress-bar [value]="project.progress / 100"></ion-progress-bar>
                 <span class="progress-text">{{ project.progress }}%</span>
               </div>
             </td>
+          </tr>
+
+          <!-- Empty State -->
+          <tr *ngIf="!loading && projects.length === 0">
+            <td colspan="6" class="text-center">No projects found</td>
           </tr>
         </tbody>
       </table>
     </div>
 
     <!-- Floating Add Project Button -->
-    <ion-fab
-      vertical="bottom"
-      horizontal="end"
-      slot="fixed"
-      class="add-project-fab"
-    >
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="add-project-fab">
       <ion-fab-button class="add-project-btn" (click)="openAddProjectModal()">
         <ion-icon name="add-outline"></ion-icon>
-        <span>Add New Project</span>
       </ion-fab-button>
     </ion-fab>
   </div>

@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { AddProjectComponent } from '../add-project/add-project.component';
+import { DbService } from 'src/app/services/db.service';
 
 @Component({
   selector: 'app-project-list',
@@ -10,21 +11,54 @@ import { AddProjectComponent } from '../add-project/add-project.component';
   templateUrl: './project-list.component.html',
   styleUrls: ['./project-list.component.scss'],
 })
-export class ProjectListComponent {
-  projects = [
-    { name: 'Project #1', company: 'ExxonMobil', wellName: 'ExampleWellName', location: '29.7604, -95.3698', progress: 0 },
-    { name: 'Project #2', company: 'ExxonMobil', wellName: 'ExampleWellName', location: '29.7604, -95.3698', progress: 50 },
-    { name: 'Project #3', company: 'ExxonMobil', wellName: 'ExampleWellName', location: '29.7604, -95.3698', progress: 50 },
-    { name: 'Project #4', company: 'ExxonMobil', wellName: 'ExampleWellName', location: '29.7604, -95.3698', progress: 50 },
-  ];
+export class ProjectListComponent implements OnInit {
+  projects: any[] = [];
+  loading = true;
 
-  constructor(private modalCtrl: ModalController) {}
+  constructor(
+    private modalCtrl: ModalController,
+    private dbService: DbService
+  ) {}
 
-  async openAddProjectModal() {
-    const modal = await this.modalCtrl.create({
-      component: AddProjectComponent,
-      cssClass: 'add-project-modal',
-    });
-    await modal.present();
+  async ngOnInit() {
+    await this.loadProjects();
   }
+
+  /** Load projects from SQLite DB */
+  async loadProjects() {
+    try {
+      await this.dbService.initDB();
+      const data = await this.dbService.getAllProjects();
+
+      // Map DB fields to UI model
+      this.projects = data.map((p: any) => ({
+        name: p.name,
+        company: p.cid || '—',
+        wellName: p.well || '—',
+        padName: p.wellpad || '—',
+        location: `${p.latitude || ''}, ${p.longitude || ''}`,
+        progress: 0, // Default progress for now
+      }));
+
+      console.log('✅ Projects loaded:', this.projects);
+    } catch (err) {
+      console.error('❌ Error loading projects:', err);
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  async openAddProjectModal(existingProject?: any) {
+  const modal = await this.modalCtrl.create({
+    component: AddProjectComponent,
+    componentProps: { existingProject }, // 👈 Pass project if editing
+  });
+  await modal.present();
+
+  const { data } = await modal.onDidDismiss();
+  if (data) {
+    this.loadProjects(); // refresh list after add/update
+  }
+}
+
 }

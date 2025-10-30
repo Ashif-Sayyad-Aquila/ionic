@@ -5,7 +5,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 import { CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import { TodosPage } from './pages/todos/todos.page';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './pages/login/login.component';
@@ -16,7 +15,7 @@ import { LoginComponent } from './pages/login/login.component';
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-    RouterModule.forChild([{ path: '', component: TodosPage }]),
+    RouterModule.forChild([{ path: '' }]),
     RouterModule.forRoot([])
   ],
   declarations: [LoginComponent],

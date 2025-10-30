@@ -3,15 +3,15 @@
   justify-content: center;
   align-items: flex-start;
   padding: 20px;
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
 }
 
 .add-project-container {
   background: #fffaf5;
   border-radius: 12px;
   padding: 25px;
-  width: 90%;
-  max-width: 600px;
+  width: 100%;
+  height: 100%;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -20,12 +20,6 @@
   font-weight: 700;
   color: #3b2d1f;
   margin-bottom: 20px;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
 }
 
 /* Input styling */
@@ -39,11 +33,6 @@ form {
 
 ion-label {
   color: #6d4c41;
-}
-
-ion-input,
-ion-select {
-  color: #3b2d1f;
 }
 
 .row {
@@ -64,7 +53,7 @@ ion-select {
   margin-top: 15px;
 }
 
-ion-button[color='warning'] {
+ion-button[color="warning"] {
   --background: #ff9800;
   --background-hover: #f57c00;
   --border-color: #ff9800;
@@ -73,9 +62,68 @@ ion-button[color='warning'] {
   font-weight: 600;
 }
 
-ion-button[fill='outline'] {
+ion-button[fill="outline"] {
   --color: #ff9800;
   --border-color: #ff9800;
   --background: transparent;
   font-weight: 600;
+}
+
+/* Align Inputs - this now controls the gap between the new standalone components */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Controls the spacing between your new inputs and selects */
+  align-items: stretch;
+}
+
+/* Style the modern ion-input and ion-select */
+ion-input,
+ion-select {
+  --background: #fff;
+  --border-color: #d9d9d9;
+  --highlight-color-focused: #e86f09;
+  --border-radius: 10px;
+  --min-height: 50px;
+  --color: #222;
+  font-family: "Open Sans", sans-serif;
+  font-size: 15px;
+}
+
+/* Specific floating label properties */
+ion-input[label-placement="floating"],
+ion-select[label-placement="floating"] {
+  --label-color: #666;
+  --label-font-size: 14px;
+}
+
+/* Focus state for label */
+ion-input.has-focus[label-placement="floating"],
+ion-select.has-focus[label-placement="floating"] {
+  --label-color-focused: #e86f09;
+}
+
+/* Dark theme overrides for ion-input and ion-select */
+body.dark ion-input,
+body.dark ion-select {
+  --background: #2a2a2a;
+  --border-color: #555;
+  --color: #fff;
+  --highlight-color-focused: #ff9800;
+}
+
+body.dark ion-input[label-placement="floating"],
+body.dark ion-select[label-placement="floating"] {
+  --label-color: #ccc;
+  --label-color-focused: #ff9800;
+}
+
+/* Adjust the row layout */
+.row {
+  display: flex;
+  gap: 20px; /* Adjust spacing between columns */
+}
+.row ion-input,
+.row ion-select {
+  flex: 1; /* Make inputs take up equal space */
 }
