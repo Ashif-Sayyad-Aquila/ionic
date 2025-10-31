@@ -3,7 +3,7 @@
     <!-- Header Section -->
     <div class="header-section">
       <img src="assets/icon/takIQ.png" alt="TAK IQ" class="logo" />
-      <h2 class="title">TAK IQ</h2>
+      <img src="assets/icon/taklogic.svg" alt="TAK LOGIC" />
     </div>
 
     <h3 class="page-heading">Projects</h3>
@@ -30,7 +30,9 @@
             <td>{{ project.location }}</td>
             <td class="progress-cell">
               <div class="progress-container">
-                <ion-progress-bar [value]="project.progress / 100"></ion-progress-bar>
+                <ion-progress-bar
+                  [value]="project.progress / 100"
+                ></ion-progress-bar>
                 <span class="progress-text">{{ project.progress }}%</span>
               </div>
             </td>
@@ -45,7 +47,12 @@
     </div>
 
     <!-- Floating Add Project Button -->
-    <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="add-project-fab">
+    <ion-fab
+      vertical="bottom"
+      horizontal="end"
+      slot="fixed"
+      class="add-project-fab"
+    >
       <ion-fab-button class="add-project-btn" (click)="openAddProjectModal()">
         <ion-icon name="add-outline"></ion-icon>
       </ion-fab-button>
