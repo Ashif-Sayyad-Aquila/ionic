@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { DbService } from 'src/app/services/db.service';
 import { BreadcrumbComponent } from "src/app/components/breadcrumb/breadcrumb.component";
 import { IonicModule, NavController } from "@ionic/angular";
@@ -23,7 +22,7 @@ export class InformationComponent implements OnInit {
     padName: 'ExamplePadName'
   };
 
-  constructor(private router: Router, private dbService: DbService, private navCtrl: NavController) { }
+  constructor(private dbService: DbService, private navCtrl: NavController) { }
 
   ngOnInit() {
     this.project = this.dbService.getCurrentProject();
