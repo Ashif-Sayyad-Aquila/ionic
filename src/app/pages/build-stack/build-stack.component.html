@@ -1,0 +1,88 @@
+<!-- Top Project Header -->
+<div class="page-header">
+  <div class="left-section">
+    <ion-icon name="arrow-back-outline" class="back-icon"></ion-icon>
+    <span class="project-title">Project #1</span>
+  </div>
+
+  <button class="save-btn" [disabled]="!canContinue">Save & Continue</button>
+</div>
+
+<!-- Breadcrumb Section -->
+<app-breadcrumb [currentStep]="2"></app-breadcrumb>
+
+<!-- Builder Workspace -->
+<div class="builder-container">
+  <p class="builder-instruction">Select assets from asset library below</p>
+   <div class="col-md-9 position-relative border bg-light p-2">
+      <!-- Buttons: Above Canvas -->
+
+      <div
+        id="contextMenu"
+        class="dropdown-menu"
+        [ngStyle]="{ top: contextMenuY + 'px', left: contextMenuX + 'px' }"
+        [class.show]="isContextMenuVisible"
+      >
+        <button class="dropdown-item" (click)="copySelected()">
+          <i class="fas fa-copy"></i> Copy
+        </button>
+
+        <button class="dropdown-item" (click)="pasteCopied()">
+          <i class="fas fa-paste"></i> Paste
+        </button>
+
+        <button class="dropdown-item" (click)="cutSelected()">
+          <i class="fas fa-scissors"></i> Cut
+        </button>
+
+        <button class="dropdown-item" (click)="cloneSelected()">
+          <i class="fas fa-clone"></i> Clone
+        </button>
+
+        <button class="dropdown-item" (click)="undo()">
+          <i class="fas fa-undo me-1"></i> Undo
+        </button>
+
+        <button class="dropdown-item" (click)="redo()">
+          <i class="fas fa-redo me-1"></i> Redo
+        </button>
+        <button class="dropdown-item" (click)="groupSelected()">
+          <i class="fas fa-object-group me-1"></i> Group
+        </button>
+        <button class="dropdown-item" (click)="ungroupSelected()">
+          <i class="fas fa-object-ungroup me-1"></i> Ungroup
+        </button>
+      </div>
+
+      <!-- Canvas Area -->
+      <div
+        id="canvas-container"
+        class="position-relative border bg-light"
+        style="width: 100%; height: 650px; overflow: auto"
+        (contextmenu)="onCanvasRightClick($event)"
+      >
+        <canvas id="fabricCanvas" style="display: block"></canvas>
+      </div>
+      <div
+        id="dropZone"
+        class="position-absolute top-0 start-0 w-100 h-100"
+        (dragover)="onDragOver($event)"
+        (drop)="onDrop($event)"
+        style="background: transparent; pointer-events: none"
+      ></div>
+    </div>
+</div>
+
+<!-- Asset Library Section -->
+<div class="asset-library">
+  <div
+    class="asset-item"
+    *ngFor="let svg of svgList"
+    draggable="true"
+    (dragstart)="onDragStart($event, svg.path)"
+    (touchstart)="onTouchStart($event, svg.path)"
+  >
+    <img [src]="svg.path" alt="{{ svg.name }}" class="asset-icon" />
+    <span class="asset-label">{{ svg.name }}</span>
+  </div>
+</div>

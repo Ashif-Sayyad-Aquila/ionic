@@ -1,0 +1,36 @@
+export const svgList: string[] = [
+  'assets/svgs/1.svg',
+  'assets/svgs/2.svg',
+  'assets/svgs/4.svg',
+  'assets/svgs/9.svg',
+  'assets/svgs/10.svg',
+  'assets/svgs/11.svg',
+  'assets/svgs/14.svg',
+  'assets/svgs/annular4.svg',
+  'assets/svgs/bop1.svg',
+  'assets/svgs/bop2.svg',
+  'assets/svgs/casing2.svg',
+  'assets/svgs/valves1.svg',
+  'assets/svgs/valves2.svg',
+  'assets/svgs/valves3.svg',
+  'assets/svgs/valves4.svg',
+  'assets/svgs/valves5.svg',
+  'assets/svgs/valves6.svg',
+  'assets/svgs/valves7.svg',
+  'assets/svgs/valves8.svg',
+  'assets/svgs/valves9.svg',
+  'assets/svgs/valves10.svg',
+  'assets/svgs/valves11.svg',
+  'assets/svgs/6.svg',
+  'assets/svgs/7.svg',
+  'assets/svgs/8.svg',
+];
+
+export const colors: string[] = [
+  '#000000', '#444444', '#666666', '#888888', '#aaaaaa', '#cccccc', '#eeeeee', '#ffffff',
+  '#ff0000', '#ff4000', '#ff8000', '#ffbf00', '#ffff00', '#bfff00', '#80ff00', '#40ff00', '#00ff00',
+  '#00ff40', '#00ff80', '#00ffbf', '#00ffff', '#00bfff', '#0080ff', '#0040ff', '#0000ff', '#4000ff',
+  '#8000ff', '#bf00ff', '#ff00ff', '#ff00bf', '#ff0080', '#ff0040',
+  '#800000', '#ff8080', '#804000', '#ffbf80', '#008000', '#80ff80', '#008080', '#80ffff',
+  '#000080', '#8080ff', '#800080', '#ff80ff'
+];

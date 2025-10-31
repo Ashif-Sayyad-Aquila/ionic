@@ -28,7 +28,7 @@
    Light Theme (Default)
    ========================================================== */
 :root {
-  --ion-color-primary: #f68100;
+  --ion-color-primary: #ff8201;
   --ion-color-primary-rgb: 255, 152, 0;
   --ion-color-primary-contrast: #ffffff;
 
@@ -37,10 +37,10 @@
   --card-background: #ffffff;
 
   --input-background: #ffffff;
-  --input-border-color: #f68100;
+  --input-border-color: #ff8201;
   --input-text-color: #000;
 
-  --button-background: #f68100;
+  --button-background: #ff8201;
   --button-text-color: #ffffff;
 
   /* Font */
@@ -52,7 +52,7 @@
    ========================================================== */
 @media (prefers-color-scheme: dark) {
   :root {
-    --ion-color-primary: #ff9800;
+    --ion-color-primary: #ff8201;
     --ion-color-primary-contrast: #000000;
 
     --ion-background-color: #fde9dc !important;
@@ -63,7 +63,7 @@
     --input-border-color: #444;
     --input-text-color: #ffffff;
 
-    --button-background: #ff9800;
+    --button-background: #ff8201;
     --button-text-color: #000;
   }
 }
@@ -133,4 +133,35 @@ h6 {
   font-size: 11px;
   line-height: 18px;
   color: #777;
+}
+
+/* BREADCRUMB STYLE */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
+  margin-bottom: 20px;
+  color: #aaa;
+}
+
+.breadcrumb span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.breadcrumb .active {
+  color: #ff8906;
+  font-weight: 600;
+}
+
+.breadcrumb span::after {
+  content: "›";
+  color: #ccc;
+}
+
+.breadcrumb span:last-child::after {
+  content: "";
 }

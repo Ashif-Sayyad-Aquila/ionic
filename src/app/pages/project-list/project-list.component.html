@@ -46,16 +46,19 @@
       </table>
     </div>
 
-    <!-- Floating Add Project Button -->
-    <ion-fab
-      vertical="bottom"
-      horizontal="end"
-      slot="fixed"
-      class="add-project-fab"
-    >
-      <ion-fab-button class="add-project-btn" (click)="openAddProjectModal()">
-        <ion-icon name="add-outline"></ion-icon>
-      </ion-fab-button>
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <button class="floating-add-btn" (click)="openAddProjectModal()">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          viewBox="0 0 14 14"
+          fill="none"
+        >
+          <path d="M6 8H0V6H6V0H8V6H14V8H8V14H6V8Z" fill="white" />
+        </svg>
+        Add New Project
+      </button>
     </ion-fab>
   </div>
 </ion-content>

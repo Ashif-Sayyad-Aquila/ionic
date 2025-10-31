@@ -107,40 +107,32 @@ ion-progress-bar {
   color: #4e342e;
 }
 
-.add-project-fab {
-  margin-bottom: 16px;
-  margin-right: 20px;
-}
-
-/* Custom Floating Button */
-/* Floating Add Project Button */
 .floating-add-btn {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  background-color: #f57c00;
-  color: #fff;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+  background-color: #ff8201; /* Orange color */
+  color: white;
   border: none;
-  border-radius: 50px;
-  padding: 12px 22px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  cursor: pointer;
+  outline: none;
+  font-weight: 600;
   font-size: 14px;
-  z-index: 1000;
-  transition: all 0.3s ease;
-}
-
-.floating-add-btn ion-icon {
-  font-size: 20px;
-  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  padding: 16px 24px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 100px;
+  background: var(--button-background, #ff8201);
+  /* M3/Elevation Light/2 */
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
 }
 
 .floating-add-btn:hover {
-  background-color: #e66a00;
+  background-color: #ff8201; /* Slightly darker on hover */
   transform: translateY(-2px);
+}
+
+.add-icon {
+  font-size: 18px;
+  font-weight: bold;
 }

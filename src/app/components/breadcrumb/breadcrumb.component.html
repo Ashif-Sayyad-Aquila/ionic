@@ -1,0 +1,9 @@
+<div class="breadcrumb">
+  <span
+    *ngFor="let step of steps; let i = index"
+    [class.active]="i + 1 <= currentStep"
+  >
+    {{ i + 1 }}. {{ step }}
+    <span *ngIf="i < steps.length - 1"> → </span>
+  </span>
+</div>

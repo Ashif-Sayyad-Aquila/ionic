@@ -12,6 +12,7 @@ export class DbService {
   private db: SQLiteDBConnection | null = null;
   private readonly DB_NAME = 'taklogic';
   private readonly DB_VERSION = 1;
+  private currentProject: any;
 
   constructor(private schemaService: SchemaService) {
     this.sqlite = new SQLiteConnection(CapacitorSQLite);
@@ -100,6 +101,20 @@ export class DbService {
     return result.values ?? [];
   }
 
+  setProject(data: any) {
+    this.currentProject = data;
+  }
+
+  getCurrentProject() {
+    return this.currentProject || {
+      id: 1,
+      name: 'ExampleProjectName',
+      team: 'Rockies',
+      company: 'Shell',
+      latitude: 29.7604,
+      longitude: -95.3698
+    };
+  }
 
 
 }

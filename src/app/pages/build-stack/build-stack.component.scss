@@ -1,0 +1,118 @@
+/* ==== Header (Top Bar) ==== */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #faf9f7;
+  padding: 12px 20px;
+  border-bottom: 1px solid #eee;
+  border-radius: 12px 12px 0 0;
+}
+
+.left-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.back-icon {
+  font-size: 20px;
+  color: #444;
+  cursor: pointer;
+}
+
+.project-title {
+  font-weight: 600;
+  font-size: 16px;
+  color: #333;
+}
+
+/* ==== Save Button ==== */
+.save-btn {
+  background-color: #ff8906;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+}
+
+.save-btn:disabled {
+  background-color: #e5e5e5;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.save-btn:hover:not(:disabled) {
+  background-color: #ff9f33;
+}
+
+/* ==== Breadcrumb Section ==== */
+app-breadcrumb {
+  display: block;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+  padding: 8px 0;
+}
+
+/* ==== Builder Area ==== */
+.builder-container {
+  text-align: center;
+  padding: 30px 20px;
+  height: calc(100vh - 10px);
+  position: relative;
+  overflow: auto;
+}
+
+.builder-instruction {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+}
+
+/* ==== Asset Library ==== */
+.asset-library {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  border: 1px solid #ff9800;
+}
+
+.asset-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #ff9800;
+  width: 80px;
+  gap: 0px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.asset-item:hover {
+  background: #fff3e0;
+  transform: scale(1.05);
+}
+
+.asset-icon {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.asset-label {
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+  text-align: center;
+}
