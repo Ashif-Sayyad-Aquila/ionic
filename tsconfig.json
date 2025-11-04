@@ -19,7 +19,12 @@
     "target": "es2022",
     "module": "es2020",
     "lib": ["es2018", "dom"],
-    "useDefineForClassFields": false
+    "useDefineForClassFields": false,
+    "skipLibCheck": true,
+    "paths": {
+      "jsdom": ["./empty-module.ts"],
+      "path": ["./node_modules/path-browserify"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

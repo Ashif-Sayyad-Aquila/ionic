@@ -18,7 +18,7 @@ import { LoginComponent } from './pages/login/login.component';
     RouterModule.forChild([{ path: '' }]),
     RouterModule.forRoot([])
   ],
-  declarations: [LoginComponent],
+  declarations: [],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class TodosPageModule {}

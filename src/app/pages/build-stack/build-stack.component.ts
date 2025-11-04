@@ -1,16 +1,19 @@
 import { AfterViewInit, Component, HostListener } from '@angular/core';
 import { BreadcrumbComponent } from "src/app/components/breadcrumb/breadcrumb.component";
-import { fabric } from 'fabric';
+import * as fabric from 'fabric';
 import { colors } from 'src/app/constants/constants';
 import { IonicModule } from "@ionic/angular";
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Capacitor } from '@capacitor/core';
+import { HttpClient , HttpClientModule} from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-build-stack',
   templateUrl: './build-stack.component.html',
   styleUrls: ['./build-stack.component.scss'],
-  imports: [BreadcrumbComponent, IonicModule, CommonModule, FormsModule],
+  imports: [BreadcrumbComponent, IonicModule, CommonModule, FormsModule,HttpClientModule],
 })
 export class BuildStackComponent implements AfterViewInit {
   currentStep = 2;
@@ -58,8 +61,10 @@ export class BuildStackComponent implements AfterViewInit {
   colors: string[] = colors;
   showColorPalette = false;
   isCanvasEmpty = true;
+  private canvasInitialized = false;
 
-  constructor() { }
+  constructor(private http: HttpClient) {}
+  //constructor(){}
 
   ngOnInit(): void {
     document.addEventListener('click', () => {
@@ -71,52 +76,79 @@ export class BuildStackComponent implements AfterViewInit {
     this.isCanvasEmpty = false;
   }
 
-  ngAfterViewInit(): void {
+
+
+ngAfterViewInit(): void {
+  if (this.canvasInitialized) return;
+  this.canvasInitialized = true;
+
+  const tryInitCanvas = () => {
     const canvasEl = document.getElementById('fabricCanvas') as HTMLCanvasElement;
-    this.canvas = new fabric.Canvas(canvasEl, {
-      selection: true,
-    });
-    this.initAnchorsSnapping();
-    // Attach events
-    this.canvas.on('object:added', (e) => {
-      if (!this.isUndoing && !this.isRedoing) this.saveState();
-    });
-    this.canvas.on('object:modified', () => {
-      if (!this.isUndoing && !this.isRedoing) this.saveState();
-    });
-    this.canvas.on('object:removed', () => {
-      if (!this.isUndoing && !this.isRedoing) this.saveState();
-    });
+    const container = document.getElementById('canvas-container') as HTMLElement;
+    const assetLibrary = document.getElementById('asset-library');
+    const breadcrumb = document.getElementById('app-breadcrumb');
+    const builderInstruction = document.getElementById('builder-instruction');
 
-
-    // Optional: save initial empty canvas state
-    this.saveState();
-    const container = document.getElementById('canvas-container');
-    if (container) {
-      this.canvas.setWidth(container.clientWidth);
-      this.canvas.setHeight(container.clientHeight);
-      this.canvas.renderAll();
+    if (!canvasEl || !container) {
+      console.warn('⏳ Waiting for canvas/container to appear...');
+      requestAnimationFrame(tryInitCanvas);
+      return;
     }
-    //this.drawGrid(25); // grid every 50px
-    // Optional: Handle window resize
-    window.addEventListener('resize', () => {
-      if (container) {
-        this.canvas.setWidth(container.clientWidth);
-        this.canvas.setHeight(container.clientHeight);
-        //this.drawGrid(25); // grid every 50px
-        this.canvas.renderAll();
-      }
+
+    // ✅ Initialize Fabric.js only once
+    this.canvas = new fabric.Canvas(canvasEl, { selection: true });
+    this.initAnchorsSnapping();
+
+    const trackChange = () => {
+      if (!this.isUndoing && !this.isRedoing) this.saveState();
+    };
+    ['object:added', 'object:modified', 'object:removed'].forEach(evt =>
+      this.canvas.on(evt, trackChange)
+    );
+
+    const resizeCanvas = () => {
+      const libraryHeight = assetLibrary?.clientHeight || 0;
+      const breadcrumbHeight = breadcrumb?.clientHeight || 0;
+      const builderInstructHeight = builderInstruction?.clientHeight || 0;
+      const containerTop = container.getBoundingClientRect().top;
+
+      const availableHeight = window.innerHeight - (libraryHeight);//+ breadcrumbHeight + builderInstructHeight + containerTop
+      console.log(window.innerHeight," ",containerTop," ",libraryHeight," ",builderInstructHeight," ",breadcrumbHeight);
+      const height = availableHeight > 0 ? availableHeight : 300;
+
+      this.canvas.setDimensions({
+        width: container.clientWidth,
+        height,
+      });
+      this.canvas.renderAll();
+
+      console.log('📏 Canvas resized:', {
+        width: container.clientWidth,
+        height,
+      });
+    };
+
+    // ✅ Wait for DOM layout + styles
+    requestAnimationFrame(() => {
+      resizeCanvas(); // Run once when ready
+      this.saveState();
     });
-    //this.shuffleSvgList();
-    this.canvas.renderAll();
-  }
+
+    // ✅ Handle resizes/orientation
+    window.addEventListener('resize', resizeCanvas);
+  };
+
+  // Kick off initialization
+  tryInitCanvas();
+}
+
 
   /** Call this once after the canvas is created (e.g. in ngAfterViewInit) */
   initAnchorsSnapping() {
     // remove old handlers if re-initializing
-    try { this.canvas.off('object:moving'); } catch { }
-    try { this.canvas.off('object:modified'); } catch { }
-    try { this.canvas.off('mouse:up'); } catch { }
+    try { this.canvas.off('object:moving',this.handleObjectMove); } catch { }
+    try { this.canvas.off('object:modified',this.clearAnchorHighlights); } catch { }
+    try { this.canvas.off('mouse:up',this.clearAnchorHighlights); } catch { }
 
     // this.canvas.on('object:moving', (e) => this.handleObjectMoveAnchors(e));
     this.canvas.on('object:modified', () => this.clearAnchorHighlights());
@@ -127,14 +159,14 @@ export class BuildStackComponent implements AfterViewInit {
     this.canvas.on('object:modified', () => this.clearSnapLines());
   }
 
-  private handleObjectMoveAnchors(e: fabric.IEvent) {
-    const active = e.target as fabric.Object;
+  private handleObjectMoveAnchors(e: any) {
+    const active = e.target;
     if (!active) return;
 
     const vpt = (this.canvas.viewportTransform as number[]) || [1, 0, 0, 1, 0, 0];
     const scale = vpt[0] ?? 1;
 
-    const aRect = active.getBoundingRect(true);
+    const aRect = active.getBoundingRect();
     const aAnchors = this.getAnchorsFromRect(aRect);
 
     let best = { distance: Infinity, ax: 0, ay: 0, bx: 0, by: 0, type: '' };
@@ -142,7 +174,7 @@ export class BuildStackComponent implements AfterViewInit {
     // 🔹 Compare with other objects (anchors)
     for (const obj of this.canvas.getObjects()) {
       if (obj === active || this.snapLines.includes(obj as fabric.Line)) continue;
-      const bRect = obj.getBoundingRect(true);
+      const bRect = obj.getBoundingRect();
       const bAnchors = this.getAnchorsFromRect(bRect);
 
       for (const a of aAnchors) {
@@ -184,7 +216,7 @@ export class BuildStackComponent implements AfterViewInit {
           evented: false,
         });
         this.canvas.add(dot);
-        dot.bringToFront();
+        (dot as any).bringToFront();
         this.anchorHighlights.push(dot);
       } else if (best.type === 'grid') {
         const dot = new fabric.Circle({
@@ -198,7 +230,7 @@ export class BuildStackComponent implements AfterViewInit {
           evented: false,
         });
         this.canvas.add(dot);
-        dot.bringToFront();
+        (dot as any).bringToFront();
         this.anchorHighlights.push(dot);
       }
 
@@ -222,7 +254,7 @@ export class BuildStackComponent implements AfterViewInit {
 
 
 
-  handleObjectMove(e: fabric.IEvent) {
+  private handleObjectMove(e: any) {
     const movingObj = e.target as fabric.Object;
     if (!movingObj || !this.canvas) return;
 
@@ -232,8 +264,8 @@ export class BuildStackComponent implements AfterViewInit {
     this.canvas.getObjects().forEach(obj => {
       if (obj === movingObj) return;
 
-      const a = movingObj.getBoundingRect(true, true);
-      const b = obj.getBoundingRect(true, true);
+      const a = movingObj.getBoundingRect();
+      const b = obj.getBoundingRect();
 
       // Check horizontal alignment (center X)
       if (Math.abs(a.left + a.width / 2 - (b.left + b.width / 2)) < this.snapThreshold) {
@@ -339,7 +371,7 @@ export class BuildStackComponent implements AfterViewInit {
 
   onTouchStart(event: TouchEvent, svgUrl: any) {
     if (!this.isEditMode) return; // prevent drag in view mode
-    event.preventDefault();
+    if (event.cancelable) event.preventDefault();
 
     const touch = event.touches[0];
 
@@ -383,38 +415,113 @@ export class BuildStackComponent implements AfterViewInit {
     event.preventDefault();
   }
 
-  addSvgToCanvas(svgUrl: string, left?: number, top?: number) {
-    fabric.loadSVGFromURL(svgUrl, (objects, options) => {
-      const svgGroup = fabric.util.groupSVGElements(objects, options);
+  async addSvgToCanvas(svgPath: string, left?: number, top?: number) {
+    try {
+      /*const svgText: string = await firstValueFrom(
+        this.http.get(svgPath, { responseType: 'text' })
+      );*/
 
-      const svgWidth = options.width || svgGroup.width || 200;
-      const svgHeight = options.height || svgGroup.height || 200;
+      const svgText =  await fetch(svgPath).then(r=> r.text());
+      if (!svgText) {
+        console.error('SVG text is empty');
+        return;
+      }
 
-      const maxSize = 150;  // Set a max size (adjust as needed)
+      // Parse DOM
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(svgText, 'image/svg+xml');
+      const svgElements = Array.from(doc.querySelectorAll('svg')) as SVGElement[];
+      if (svgElements.length === 0) {
+        console.error('No valid SVG elements found.');
+        return;
+      }
 
-      // Calculate scale factor to limit max width/height
-      const scaleFactor = Math.min(1, maxSize / Math.max(svgWidth, svgHeight));
+      const allObjects: fabric.FabricObject[] = [];
+
+      for (const el of svgElements) {
+        const svgString = new XMLSerializer().serializeToString(el);
+        const { objects } = await fabric.loadSVGFromString(svgString);
+
+      objects
+        .filter((obj): obj is fabric.FabricObject => obj !== null)
+        .forEach((obj) => { allObjects.push(obj); });
+      }
+
+      if (allObjects.length === 0) {
+        console.error('No Fabric objects created.');
+        return;
+      }
+
+      // Create group
+      const svgGroup = new fabric.Group(allObjects, { selectable: true });
+      svgGroup.setCoords();
+
+      const bbox = svgGroup.getBoundingRect();
+      console.log('Group box:', JSON.stringify(bbox));
+
+      // Normalize scale
+      const maxSize = 300;
+      //const scaleFactor = Math.min(1, maxSize / Math.max(bbox.width, bbox.height));
+
+
+      // Safe defaults
+      const canvasWidth = this.canvas.getWidth() ;
+      const canvasHeight = this.canvas.getHeight() ;
+
+       const scaleFactor = Math.min(canvasWidth/bbox.width, canvasHeight/bbox.height);
+
+
+      svgGroup.scale(scaleFactor/10);
+
 
       svgGroup.set({
-        left: left ?? (this.canvas.getWidth() / 2 - (svgWidth * scaleFactor) / 2),
-        top: top ?? (this.canvas.getHeight() / 2 - (svgHeight * scaleFactor) / 2),
-        scaleX: scaleFactor,
-        scaleY: scaleFactor,
-        selectable: true,
+        left: left ?? (canvasWidth - bbox.width * scaleFactor) / 2,
+        top: top ?? (canvasHeight - bbox.height * scaleFactor) / 2,
+        opacity: 1,
+        visible: true,
       });
+      console.log(scaleFactor," ",canvasHeight," " ,canvasWidth," ",bbox.height," ",bbox.width);
+  /*
+      svgGroup.set({
+        left: this.canvas.getWidth() / 2,
+        top: this.canvas.getHeight() / 2,
+        originX: 'center',
+        originY: 'center',
+      });
+      */
+     /*
+      // Resize if needed
+      this.canvas.setDimensions({
+        width: Math.max(canvasWidth, bbox.width * scaleFactor + 50),
+        height: Math.max(canvasHeight, bbox.height * scaleFactor + 50),
+      });*/
 
-      const newCanvasWidth = Math.max(this.canvas.getWidth(), (svgGroup.left ?? 0) + (svgWidth / 3));
-      const newCanvasHeight = Math.max(this.canvas.getHeight(), (svgGroup.top ?? 0) + (svgHeight / 3));
-
-      this.canvas.setWidth(newCanvasWidth);
-      this.canvas.setHeight(newCanvasHeight);
-
+      // 🔹 Force rendering
       this.canvas.add(svgGroup);
+      this.canvas.centerObject(svgGroup);
+      this.canvas.setActiveObject(svgGroup);
       this.canvas.renderAll();
-      this.saveState();
-      this.displayToast('SVG added to canvas.');
-    });
+
+      // 🔹 Debug info
+      console.log(
+        '✅ SVG Rendered:',JSON.stringify(
+        {
+          objectCount: allObjects.length,
+          width: this.canvas.getWidth(),
+          height: this.canvas.getHeight(),
+          scaleFactor,
+          position: { left: svgGroup.left, top: svgGroup.top },
+        })
+      );
+
+      // Optional UX
+      this.saveState?.();
+      this.displayToast?.('SVG added to canvas.');
+    } catch (err: any) {
+      console.error('Add SVG to canvas error:', err.message ?? err);
+    }
   }
+
 
 
   removeSelected() {
@@ -525,11 +632,9 @@ export class BuildStackComponent implements AfterViewInit {
       const activeSelection = activeObject as fabric.ActiveSelection;
       const objects = activeSelection.getObjects();
 
-      // Deselect active selection first
-      this.canvas.discardActiveObject();
 
       // Remove objects from canvas temporarily
-      objects.forEach(obj => this.canvas.remove(obj));
+      //objects.forEach(obj => this.canvas.remove(obj));
 
       const group = new fabric.Group(objects, {
         left: activeSelection.left ?? 100,
@@ -538,6 +643,9 @@ export class BuildStackComponent implements AfterViewInit {
       });
 
       this.canvas.add(group);
+       // Deselect active selection first
+      this.canvas.discardActiveObject();
+      console.log("Objects discarded");
       this.canvas.setActiveObject(group);
       this.canvas.requestRenderAll();
     } else {
@@ -579,7 +687,8 @@ export class BuildStackComponent implements AfterViewInit {
     this.canvas.requestRenderAll();
   }
 
-  saveState() {
+  saveState()
+  {
     const state = JSON.stringify(this.canvas, (key, value) => {
       // Remove references to fabric-specific internal properties to reduce JSON size
       if (key === 'canvas') return undefined;
@@ -814,68 +923,79 @@ export class BuildStackComponent implements AfterViewInit {
   // }
 
 
-  copySelected(): void {
-    const activeObject = this.canvas.getActiveObject();
-    if (activeObject) {
-      activeObject.clone((cloned: fabric.Object) => {
-        this.copiedObject = cloned;
-        this.displayToast('Object copied to clipboard.');
-      });
-    } else {
-      this.displayToast('Select an object first to copy.');
-    }
+  async copySelected(): Promise<void> {
+  const activeObject = this.canvas?.getActiveObject();
+
+  if (!activeObject) {
+    this.displayToast('Select an object first to copy.');
+    return;
   }
 
-  pasteCopied(): void {
-    if (this.copiedObject) {
-      this.copiedObject.clone((cloned: fabric.Object) => {
-        cloned.set({
-          left: (this.copiedObject!.left || 0) + 10,
-          top: (this.copiedObject!.top || 0) + 10,
-          evented: true,
-        });
-        this.canvas.add(cloned);
-        this.canvas.setActiveObject(cloned);
-        this.canvas.requestRenderAll();
-        this.displayToast('Object pasted.');
-      });
-    } else {
-      this.displayToast('No object in clipboard to paste.');
-    }
+  try {
+    const cloned = await activeObject.clone();
+    this.copiedObject = cloned;
+    this.displayToast('Object copied to clipboard.');
+  } catch (error) {
+    console.error('Error copying object:', error);
+    this.displayToast('Failed to copy object.');
+  }
+}
+
+
+async cutSelected(): Promise<void> {
+  const activeObject = this.canvas?.getActiveObject();
+
+  if (!activeObject) {
+    this.displayToast('Select an object first to cut.');
+    return;
   }
 
-  cutSelected(): void {
-    const activeObject = this.canvas.getActiveObject();
-    if (activeObject) {
-      activeObject.clone((cloned: fabric.Object) => {
-        this.copiedObject = cloned;
-        this.canvas.remove(activeObject);
-        this.canvas.requestRenderAll();
-        this.displayToast('Object cut to clipboard.');
-      });
-    } else {
-      this.displayToast('Select an object first to cut.');
-    }
+  try {
+    const cloned = await activeObject.clone();
+    this.copiedObject = cloned;
+
+    this.canvas.remove(activeObject);
+    this.canvas.discardActiveObject();
+    this.canvas.requestRenderAll();
+
+    this.displayToast('Object cut to clipboard.');
+  } catch (error) {
+    console.error('Error cutting object:', error);
+    this.displayToast('Failed to cut object.');
+  }
+}
+
+
+async cloneSelected(): Promise<void> {
+  const activeObject = this.canvas?.getActiveObject();
+
+  if (!activeObject) {
+    this.displayToast('Select an object first to clone.');
+    return;
   }
 
-  cloneSelected(): void {
-    const activeObject = this.canvas.getActiveObject();
-    if (activeObject) {
-      activeObject.clone((cloned: fabric.Object) => {
-        cloned.set({
-          left: (activeObject.left || 0) + 10,
-          top: (activeObject.top || 0) + 10,
-          evented: true,
-        });
-        this.canvas.add(cloned);
-        this.canvas.setActiveObject(cloned);
-        this.canvas.requestRenderAll();
-        this.displayToast('Object cloned.');
-      });
-    } else {
-      this.displayToast('Select an object first to clone.');
-    }
+  try {
+    // clone() now returns a Promise in Fabric v6+
+    const cloned = await activeObject.clone();
+
+    cloned.set({
+      left: (activeObject.left || 0) + 10,
+      top: (activeObject.top || 0) + 10,
+      evented: true,
+    });
+
+    this.canvas.add(cloned);
+    this.canvas.setActiveObject(cloned);
+    this.canvas.requestRenderAll();
+
+    this.displayToast('Object cloned.');
+    this.saveState?.(); // optional undo/redo tracking
+  } catch (err) {
+    console.error('Clone failed:', err);
+    this.displayToast('Error cloning object.');
   }
+}
+
 
   toggleColorPalette(event: Event): void {
     event.stopPropagation();
@@ -930,5 +1050,30 @@ export class BuildStackComponent implements AfterViewInit {
     // Re-render canvas
     this.canvas.requestRenderAll();
   }
+  async pasteCopied(): Promise<void> {
+  if (!this.copiedObject) {
+    this.displayToast('Clipboard is empty.');
+    return;
+  }
+
+  try {
+    const cloned = await this.copiedObject.clone();
+    cloned.set({
+      left: (this.copiedObject.left || 0) + 10,
+      top: (this.copiedObject.top || 0) + 10,
+      evented: true,
+    });
+
+    this.canvas.add(cloned);
+    this.canvas.setActiveObject(cloned);
+    this.canvas.requestRenderAll();
+
+    this.displayToast('Object pasted.');
+  } catch (error) {
+    console.error('Error pasting object:', error);
+    this.displayToast('Failed to paste object.');
+  }
+}
+
 
 }

@@ -9,12 +9,12 @@
 </div>
 
 <!-- Breadcrumb Section -->
-<app-breadcrumb [currentStep]="2"></app-breadcrumb>
+<app-breadcrumb id= 'app-breadcrumb' [currentStep]="2"></app-breadcrumb>
 
 <!-- Builder Workspace -->
 <div class="builder-container">
-  <p class="builder-instruction">Select assets from asset library below</p>
-   <div class="col-md-9 position-relative border bg-light p-2">
+  <p id='builder-instruction' class="builder-instruction">Select assets from asset library below</p>
+   <div class="col-md-9 position-relative border bg-light p-2 canvas-wrapper">
       <!-- Buttons: Above Canvas -->
 
       <div
@@ -54,11 +54,11 @@
         </button>
       </div>
 
-      <!-- Canvas Area -->
+      <!-- Canvas
+        style="width: 100%; height: 650px; overflow: auto" Area -->
       <div
         id="canvas-container"
         class="position-relative border bg-light"
-        style="width: 100%; height: 650px; overflow: auto"
         (contextmenu)="onCanvasRightClick($event)"
       >
         <canvas id="fabricCanvas" style="display: block"></canvas>
@@ -74,7 +74,7 @@
 </div>
 
 <!-- Asset Library Section -->
-<div class="asset-library">
+<div id='asset-library' class="asset-library">
   <div
     class="asset-item"
     *ngFor="let svg of svgList"
