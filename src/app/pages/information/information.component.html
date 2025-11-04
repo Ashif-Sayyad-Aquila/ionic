@@ -11,75 +11,77 @@
 
 <ion-content class="info-page">
 
-  <!-- Breadcrumb -->
-  <app-breadcrumb [currentStep]="1"></app-breadcrumb>
+  <!-- Stepper -->
+  <app-breadcrumb id= 'app-breadcrumb' [currentStep]="1"></app-breadcrumb>
 
-  <!-- Info Card -->
-  <ion-card class="info-card">
-    <ion-card-header>
-      <ion-card-title class="card-title">Project Information</ion-card-title>
-    </ion-card-header>
+  <!-- Info Card (Centered) -->
+  <div class="content-wrapper">
+    <ion-card class="info-card">
+      <ion-card-header>
+        <ion-card-title class="card-title">Project Information</ion-card-title>
+      </ion-card-header>
 
-    <ion-card-content>
-      <!-- Basic Information -->
-      <div class="info-block">
-        <h4>Basic Information</h4>
-        <ion-grid>
-          <ion-row>
-            <ion-col size="12" size-md="6">
-              <label>Project Name</label>
-              <p>{{ project.name || 'ExampleProjectName' }}</p>
-            </ion-col>
-            <ion-col size="12" size-md="6">
-              <label>Team</label>
-              <p>{{ project.team || 'Rockies' }}</p>
-            </ion-col>
-            <ion-col size="12" size-md="6">
-              <label>Company</label>
-              <p>{{ project.company || 'Shell' }}</p>
-            </ion-col>
-            <ion-col size="12" size-md="6">
-              <label>Start Date</label>
-              <p>{{ project.startDate || 'MM/DD/YYYY' }}</p>
-            </ion-col>
-            <ion-col size="12" size-md="6">
-              <label>Latitude</label>
-              <p>{{ project.latitude || '29.7604' }}</p>
-            </ion-col>
-            <ion-col size="12" size-md="6">
-              <label>Longitude</label>
-              <p>{{ project.longitude || '-95.3698' }}</p>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </div>
+      <ion-card-content>
+        <!-- Basic Info -->
+        <div class="info-block">
+          <h4>Basic Information</h4>
+          <ion-grid>
+            <ion-row>
+              <ion-col size="12" size-md="6">
+                <label>Project Name</label>
+                <p>{{ project.name || 'ExampleProjectName' }}</p>
+              </ion-col>
+              <ion-col size="12" size-md="6">
+                <label>Team</label>
+                <p>{{ project.team || 'Rockies' }}</p>
+              </ion-col>
+              <ion-col size="12" size-md="6">
+                <label>Company</label>
+                <p>{{ project.company || 'Shell' }}</p>
+              </ion-col>
+              <ion-col size="12" size-md="6">
+                <label>Start Date</label>
+                <p>{{ project.startDate || 'MM/DD/YYYY' }}</p>
+              </ion-col>
+              <ion-col size="12" size-md="6">
+                <label>Latitude</label>
+                <p>{{ project.latitude || '29.7604' }}</p>
+              </ion-col>
+              <ion-col size="12" size-md="6">
+                <label>Longitude</label>
+                <p>{{ project.longitude || '-95.3698' }}</p>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </div>
 
-      <!-- Well Information -->
-      <div class="info-block">
-        <h4>Well Information</h4>
-        <ion-grid>
-          <ion-row>
-            <ion-col size="12" size-md="6">
-              <label>Well Name</label>
-              <p>{{ project.wellName || 'ExampleWellName' }}</p>
-            </ion-col>
-            <ion-col size="12" size-md="6">
-              <label>Pad Name</label>
-              <p>{{ project.padName || 'ExamplePadName' }}</p>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </div>
+        <!-- Well Info -->
+        <div class="info-block">
+          <h4>Well Information</h4>
+          <ion-grid>
+            <ion-row>
+              <ion-col size="12" size-md="6">
+                <label>Well Name</label>
+                <p>{{ project.wellName || 'ExampleWellName' }}</p>
+              </ion-col>
+              <ion-col size="12" size-md="6">
+                <label>Pad Name</label>
+                <p>{{ project.padName || 'ExamplePadName' }}</p>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </div>
 
-      <!-- Buttons -->
-      <div class="button-group ion-padding-top">
-        <ion-button expand="block" class="proceed-btn" (click)="proceedToBuild()">
-          Proceed to Build
-        </ion-button>
-        <ion-button expand="block" class="edit-btn" fill="outline" color="warning" (click)="editInformation()">
-          Edit Information
-        </ion-button>
-      </div>
-    </ion-card-content>
-  </ion-card>
+        <!-- Buttons -->
+        <div class="button-group ion-padding-top">
+          <ion-button expand="block" class="proceed-btn" (click)="proceedToBuild()">
+            Proceed to Build
+          </ion-button>
+          <ion-button expand="block" class="edit-btn" fill="outline" (click)="editInformation()">
+            Edit Information
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>

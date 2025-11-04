@@ -8,7 +8,7 @@ import { InformationComponent } from './pages/information/information.component'
 import { ReportComponent } from './pages/report/report.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'information', pathMatch: 'full' },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'projects', component: ProjectListComponent },
   { path: 'add-project', component: AddProjectComponent },

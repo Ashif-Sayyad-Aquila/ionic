@@ -1,9 +1,24 @@
-<div class="breadcrumb">
-  <span
-    *ngFor="let step of steps; let i = index"
-    [class.active]="i + 1 <= currentStep"
-  >
-    {{ i + 1 }}. {{ step }}
-    <span *ngIf="i < steps.length - 1"> → </span>
-  </span>
+<div class="breadcrumb-container">
+  <ng-container *ngFor="let step of steps; let i = index">
+    <div
+      class="breadcrumb-step"
+      [class.active]="i + 1 === currentStep"
+      [class.completed]="i + 1 < currentStep"
+    >
+      <div class="circle">
+        <ng-container *ngIf="i + 1 < currentStep; else stepNumber">
+          ✓
+        </ng-container>
+        <ng-template #stepNumber>{{ i + 1 }}</ng-template>
+      </div>
+      <span class="label">{{ step }}</span>
+    </div>
+
+    <!-- Line between steps -->
+    <div
+      *ngIf="i < steps.length - 1"
+      class="line"
+      [class.active]="i + 1 < currentStep"
+    ></div>
+  </ng-container>
 </div>

@@ -22,7 +22,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let project of projects">
+          <tr
+            *ngFor="let project of projects"
+            (click)="openProjectInfo(project)"
+            class="clickable-row"
+          >
             <td>{{ project.name }}</td>
             <td>{{ project.company }}</td>
             <td>{{ project.wellName }}</td>

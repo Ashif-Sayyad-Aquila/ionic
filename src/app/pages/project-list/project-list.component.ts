@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IonicModule, ModalController } from '@ionic/angular';
+import { IonicModule, ModalController, NavController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { AddProjectComponent } from '../add-project/add-project.component';
 import { DbService } from 'src/app/services/db.service';
@@ -17,8 +17,9 @@ export class ProjectListComponent implements OnInit {
 
   constructor(
     private modalCtrl: ModalController,
-    private dbService: DbService
-  ) {}
+    private dbService: DbService,
+    private navCtrl: NavController
+  ) { }
 
   async ngOnInit() {
     await this.loadProjects();
@@ -49,16 +50,22 @@ export class ProjectListComponent implements OnInit {
   }
 
   async openAddProjectModal(existingProject?: any) {
-  const modal = await this.modalCtrl.create({
-    component: AddProjectComponent,
-    componentProps: { existingProject }, // 👈 Pass project if editing
-  });
-  await modal.present();
+    const modal = await this.modalCtrl.create({
+      component: AddProjectComponent,
+      componentProps: { existingProject }, // 👈 Pass project if editing
+    });
+    await modal.present();
 
-  const { data } = await modal.onDidDismiss();
-  if (data) {
-    this.loadProjects(); // refresh list after add/update
+    const { data } = await modal.onDidDismiss();
+    if (data) {
+      this.loadProjects(); // refresh list after add/update
+    }
   }
-}
+
+  // 👇 New method for row click
+  openProjectInfo(project: any) {
+    this.dbService.setProject(project); // save project in service
+    this.navCtrl.navigateForward('/information'); // navigate to info page
+  }
 
 }

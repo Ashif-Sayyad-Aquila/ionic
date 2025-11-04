@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { IonicModule, ModalController, LoadingController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -15,6 +15,9 @@ import { v4 as uuidv4 } from 'uuid';
   styleUrls: ['./add-project.component.scss'],
 })
 export class AddProjectComponent implements OnInit {
+  @Input() isEdit = false;
+  @Input() projectId: string | null | undefined;
+
   project = {
     projectName: '',
     team: '',
@@ -25,9 +28,6 @@ export class AddProjectComponent implements OnInit {
     padName: '',
     deviceUUID: '',
   };
-
-  isEdit = false; // default value
-
   constructor(
     private dbService: DbService,
     private modalCtrl: ModalController,
@@ -35,18 +35,39 @@ export class AddProjectComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    // Show loading spinner
     const loading = await this.loadingCtrl.create({
-      message: 'Fetching location and device info...',
+      message: this.isEdit ? 'Loading project...' : 'Fetching location and device info...',
       spinner: 'circles',
     });
     await loading.present();
 
     try {
-      await this.getDeviceInfo();
-      await this.getCoordinates();
+      if (!this.dbService['db']) throw new Error('DB not initialized');
+      if (this.isEdit && this.projectId) {
+        // Fetch existing project from DB
+        const query = `SELECT * FROM project WHERE id = ?`;
+        const result = await this.dbService['db'].query(query, [this.projectId]);
+
+        if (result?.values?.length) {
+          const data = result.values[0];
+          this.project = {
+            projectName: data.name,
+            team: data.tid,
+            company: data.cid,
+            latitude: data.latitude,
+            longitude: data.longitude,
+            wellName: data.well,
+            padName: data.wellpad,
+            deviceUUID: data.deviceinfo,
+          };
+        }
+      } else {
+        // Add mode → fetch new info
+        await this.getDeviceInfo();
+        await this.getCoordinates();
+      }
     } catch (err) {
-      console.error('Error while initializing:', err);
+      console.error('❌ Error initializing AddProjectComponent:', err);
     } finally {
       loading.dismiss();
     }
@@ -63,30 +84,50 @@ export class AddProjectComponent implements OnInit {
         return;
       }
       if (!this.dbService['db']) throw new Error('DB not initialized');
-      // await this.dbService.initDB();
 
-      const insertSQL = `
-        INSERT INTO project (
-          id, name, tid, cid, well, wellpad, latitude, longitude, deviceinfo, created_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `;
-
-      const params = [
-        uuidv4(),
-        this.project.projectName,
-        this.project.team || '',
-        this.project.company || '',
-        this.project.wellName || '',
-        this.project.padName || '',
-        this.project.latitude || '',
-        this.project.longitude || '',
-        this.project.deviceUUID || 'Unknown Device',
-        new Date().toISOString(),
-      ];
-
-      //await this.dbService['db']?.run(insertSQL, params);
-      await this.dbService['db'].run(insertSQL, params);
-      console.log('✅ Project saved:', this.project);
+      if (this.isEdit && this.projectId) {
+        // Update existing record
+        const updateSQL = `
+          UPDATE project SET
+            name = ?, tid = ?, cid = ?, well = ?, wellpad = ?,
+            latitude = ?, longitude = ?, deviceinfo = ?
+          WHERE id = ?
+        `;
+        const params = [
+          this.project.projectName,
+          this.project.team,
+          this.project.company,
+          this.project.wellName,
+          this.project.padName,
+          this.project.latitude,
+          this.project.longitude,
+          this.project.deviceUUID,
+          this.projectId,
+        ];
+        await this.dbService['db'].run(updateSQL, params);
+        console.log('✅ Project updated:', this.project);
+      } else {
+        // Insert new record
+        const insertSQL = `
+          INSERT INTO project (
+            id, name, tid, cid, well, wellpad, latitude, longitude, deviceinfo, created_at
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+        const params = [
+          uuidv4(),
+          this.project.projectName,
+          this.project.team,
+          this.project.company,
+          this.project.wellName,
+          this.project.padName,
+          this.project.latitude,
+          this.project.longitude,
+          this.project.deviceUUID,
+          new Date().toISOString(),
+        ];
+        await this.dbService['db'].run(insertSQL, params);
+        console.log('✅ Project added:', this.project);
+      }
 
       this.modalCtrl.dismiss(true);
     } catch (err) {
@@ -108,16 +149,13 @@ export class AddProjectComponent implements OnInit {
   async getCoordinates() {
     try {
       await Geolocation.requestPermissions();
-
       const position = await Geolocation.getCurrentPosition({
         enableHighAccuracy: true,
         timeout: 50000,
         maximumAge: 0,
       });
-
       this.project.latitude = position.coords.latitude.toString();
       this.project.longitude = position.coords.longitude.toString();
-
       console.log('📍 Coordinates:', this.project.latitude, this.project.longitude);
     } catch (err) {
       console.error('Error fetching location:', err);

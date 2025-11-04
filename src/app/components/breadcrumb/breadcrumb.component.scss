@@ -1,6 +1,101 @@
-.breadcrumb {
+/* ==== Breadcrumb Container ==== */
+.breadcrumb-container {
   display: flex;
-  gap: 8px;
-  font-size: 16px;
-  margin-bottom: 15px;
+  justify-content: center;
+  align-items: center;
+  background: #fff;
+  padding: 16px 12px;
+  border-bottom: 1px solid #eee;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ==== Step ==== */
+.breadcrumb-step {
+  display: flex;
+  align-items: center;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* ==== Step Circle ==== */
+.circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #e5e5e5;
+  color: #555;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+/* ==== Label ==== */
+.label {
+  margin-left: 8px;
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+/* ==== Line ==== */
+.line {
+  width: 40px;
+  height: 2px;
+  background: #ddd;
+  margin: 0 8px;
+  transition: background 0.3s ease;
+}
+
+/* ==== Active Step ==== */
+.breadcrumb-step.active .circle {
+  background: #ff8906;
+  color: #fff;
+}
+.breadcrumb-step.active .label {
+  color: #000;
+  font-weight: 600;
+}
+.line.active {
+  background: #ff8906;
+}
+
+/* ==== Completed (Checked) Step ==== */
+.breadcrumb-step.completed .circle {
+  background: #4caf50; /* green for done */
+  color: #fff;
+}
+.breadcrumb-step.completed .label {
+  color: #4caf50;
+  font-weight: 600;
+}
+.line.active {
+  background: #4caf50;
+}
+
+/* ==== Responsive ==== */
+@media (max-width: 768px) {
+  .breadcrumb-container {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .circle {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+  }
+
+  .label {
+    font-size: 13px;
+  }
+
+  .line {
+    width: 25px;
+  }
 }

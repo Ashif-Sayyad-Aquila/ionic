@@ -1,18 +1,31 @@
 ion-content.info-page {
-  --background: #feeede;
+  --background: #fdeee3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  min-height: 100%;
+  font-family: "Inter", "Segoe UI", sans-serif;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+/* === Center Content Wrapper === */
+.content-wrapper {
+  width: 100%;
   display: flex;
   justify-content: center;
+  align-items: flex-start;
   padding: 16px;
-  font-family: "Inter", "Segoe UI", sans-serif;
 }
 
 /* === Info Card === */
 .info-card {
   background: #fff;
-  border-radius: 12px;
+  border-radius: 14px;
   width: 100%;
   max-width: 720px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   color: #333;
 }
 
@@ -25,7 +38,61 @@ ion-content.info-page {
   margin-bottom: 15px;
 }
 
-/* === Info Block === */
+/* === Stepper === */
+.stepper-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 10px 0 20px;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #b9a89a;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.step.active {
+  color: #ff8906;
+}
+
+.circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid #ff8906;
+  background: #fffaf4;
+  color: #ff8906;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.step.active .circle {
+  background: #ff8906;
+  color: #fff;
+}
+
+.line {
+  width: 60px;
+  height: 2px;
+  background: #e5d9c9;
+  margin: 0 10px;
+}
+
+/* === Info Section === */
 .info-block {
   margin-bottom: 20px;
 }
@@ -37,7 +104,7 @@ ion-content.info-page {
   margin-bottom: 10px;
 }
 
-/* === Grid styling === */
+/* === Labels === */
 ion-col {
   display: flex;
   flex-direction: column;
@@ -71,6 +138,7 @@ p {
   --border-radius: 25px;
   font-weight: 600;
   font-size: 14px;
+  height: 44px;
 }
 
 .edit-btn {
@@ -79,25 +147,23 @@ p {
   --border-radius: 25px;
   font-weight: 600;
   font-size: 14px;
+  height: 44px;
 }
 
-/* === Header === */
-.page-header {
-  background: #faf9f7;
-  border-bottom: 1px solid #eee;
-}
-
-.project-title {
-  font-weight: 600;
-  font-size: 16px;
-  margin-left: 10px;
-  color: #333;
-}
-
-/* === Responsive Tweaks === */
+/* === Responsive === */
 @media (max-width: 768px) {
-  ion-card {
-    padding: 16px;
+  .info-card {
+    padding: 14px;
+    max-width: 95%;
+  }
+
+  .stepper {
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .line {
+    width: 40px;
   }
 
   .info-block h4 {
