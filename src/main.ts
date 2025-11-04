@@ -1,4 +1,6 @@
 
+
+import 'jeep-sqlite/dist/components/jeep-sqlite.js';
 import { enableProdMode } from '@angular/core';
 import { environment } from './environments/environment';
 import { bootstrapApplication } from '@angular/platform-browser';

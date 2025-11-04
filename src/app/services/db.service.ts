@@ -24,20 +24,38 @@ export class DbService {
    */
   async initDB(): Promise<void> {
     try {
-      // Create connection & open
+      const platform = Capacitor.getPlatform();
+
+      if (platform === 'web') {
+        // Ensure jeep-sqlite custom element is available
+        const jeepEl = document.querySelector('jeep-sqlite');
+        if (!jeepEl) {
+          throw new Error('❌ jeep-sqlite element not found in DOM!');
+        }
+
+        await customElements.whenDefined('jeep-sqlite');
+
+        // Initialize the web store bridge
+        await CapacitorSQLite.initWebStore();
+        console.log('🌐 Web store initialized');
+      }
+
+      // Create a connection and open the database
       this.db = await this.sqlite.createConnection(
-        this.DB_NAME, false, 'no-encryption', 1, false);
+        this.DB_NAME, false, 'no-encryption', this.DB_VERSION, false
+      );
 
       await this.db.open();
 
-      // Create table if not exists
+      // Create tables if not exist
       await this.schemaService.createTables(this.db);
-      console.log('✅ Database initialized');
+      console.log('✅ Database initialized successfully');
     } catch (err) {
       console.error('initDB err', err);
       throw err;
     }
   }
+
 
   /** Insert a value (parameterized) */
   async addValue(value: string): Promise<number> {
@@ -67,6 +85,7 @@ export class DbService {
       this.db = null;
     }
   }
+
 
   async delete(id: number): Promise<void> {
     if (!this.db) throw new Error('DB not initialized');
